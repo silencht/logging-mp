@@ -7,34 +7,35 @@ from module_a.module_b.worker_pb import worker_pb
 from module_c.processor_pc import processor_pc
 
 
-logger = logging_mp.get_Logger(__name__)
-
 # DEBUG => INFO => WARNING => ERROR => CRITICAL
 
 def main():
-    logging_mp.set_Global_Level(logging_mp.INFO)
-    logger.warning("=== Global Debug Mode ===")
-    worker_pa()
-    worker_pb()
-    processor_pc()
+    try:
+        logging_mp.basic_Config(
+            log_file="test_log_tool_mp.log",
+            use_file_handler=True,
+            use_rich_handler=True,
+            level=logging_mp.INFO,
+        )
+        logger = logging_mp.get_Logger()
+        logger.critical("=== Test Multiprocessing ===")
+        logger.warning("Starting worker processes...")
+        processes = []
+        for i, target in enumerate([worker_pa, worker_pb]):
+            p = Process(target=target, name=f"Process-{i}")
+            p.start()
+            processes.append(p)
 
-    logging_mp.set_Level("module_a.module_b.worker_pb", logging_mp.WARNING)
-    logging_mp.set_Level("module_c.processor_pc", logging_mp.DEBUG)
-    logger.error("=== SubModule worker_pb WARNING Mode + SubModule processor_pc DEBUG Mode ===")
-    worker_pa()
-    worker_pb()
-    processor_pc()
+        for p in processes:
+            p.join()
+        time.sleep(0.5)
 
-    logger.critical("=== Test Multiprocessing ===")
-    processes = []
-    for i, target in enumerate([worker_pa, worker_pb, processor_pc]):
-        p = Process(target=target, name=f"Process-{i}")
-        p.start()
-        processes.append(p)
-
-    for p in processes:
-        p.join()
-    time.sleep(0.5)
+        processor_pc()
+        processor_pc()
+    except KeyboardInterrupt:
+        logger.error("KeyboardInterrupt received, stopping processes.")
+    finally:
+        logging_mp.stop_listener()
 
 if __name__ == "__main__":
     main()
