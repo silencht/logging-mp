@@ -1,6 +1,6 @@
 import time
 from multiprocessing import Process
-from utils.log_tool_mt import logging_mt
+from utils.logging_mt import logging_mt
 
 from module_a.worker_ta import worker_ta
 from module_a.module_b.worker_tb import worker_tb

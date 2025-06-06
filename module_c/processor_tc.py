@@ -1,4 +1,4 @@
-from utils.log_tool_mt import logging_mt
+from utils.logging_mt import logging_mt
 logging_mt = logging_mt.get_logger(__name__)
 
 def processor_tc():
