@@ -1,41 +1,42 @@
-import time
 from multiprocessing import Process
-from utils.log_tool_mp import logging_mp
+import threading
+from utils.logging_mp import logging_mp
 
 from module_a.worker_pa import worker_pa
 from module_a.module_b.worker_pb import worker_pb
 from module_c.processor_pc import processor_pc
 
+logging_mp.basic_config(level=logging_mp.WARNING)
+logger = logging_mp.get_logger(__name__)
 
-# DEBUG => INFO => WARNING => ERROR => CRITICAL
 
 def main():
     try:
-        logging_mp.basic_Config(
-            log_file="test_log_tool_mp.log",
-            use_file_handler=True,
-            use_rich_handler=True,
-            level=logging_mp.INFO,
-        )
-        logger = logging_mp.get_Logger()
-        logger.critical("=== Test Multiprocessing ===")
-        logger.warning("Starting worker processes...")
+
+        logger.debug("Should not be printed.")
+        logger.info("Should not be printed.")
+        logger.warning("This is a warning message")
+        logger.error("This is an error message")
+        logger.critical("This is a critical message")
+
         processes = []
-        for i, target in enumerate([worker_pa, worker_pb]):
+        for i, target in enumerate([worker_pa, worker_pb, processor_pc]):
             p = Process(target=target, name=f"Process-{i}")
             p.start()
             processes.append(p)
-
         for p in processes:
             p.join()
-        time.sleep(0.5)
+        
+        threads = []
+        for i, target in enumerate([worker_pa, worker_pb, processor_pc]):
+            t = threading.Thread(target=target, name=f"Thread-{i}")
+            t.start()
+            threads.append(t)
+        for t in threads:
+            t.join()
 
-        processor_pc()
-        processor_pc()
     except KeyboardInterrupt:
         logger.error("KeyboardInterrupt received, stopping processes.")
-    finally:
-        logging_mp.stop_listener()
 
 if __name__ == "__main__":
     main()

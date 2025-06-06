@@ -2,7 +2,7 @@ from utils.log_tool_mt import logging_mt
 import time
 import threading
 
-logging_mt = logging_mt.get_Logger(__name__)
+logging_mt = logging_mt.get_logger(__name__)
 
 def thread_task(thread_id):
     logging_mt.info(f"[Thread-{thread_id}] Hello from a thread!")

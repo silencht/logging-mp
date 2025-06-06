@@ -7,7 +7,7 @@ from module_a.module_b.worker_tb import worker_tb
 from module_c.processor_tc import processor_tc
 
 
-logger = logging_mt.get_Logger(__name__)
+logger = logging_mt.get_logger(__name__)
 
 # DEBUG => INFO => WARNING => ERROR => CRITICAL
 

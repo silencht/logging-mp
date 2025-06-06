@@ -84,7 +84,7 @@ class logging_mt:
         logger.setLevel(level)
 
     @classmethod
-    def get_Logger(cls, name: Any = None) -> logging.Logger:
+    def get_logger(cls, name: Any = None) -> logging.Logger:
         cls._init_shared_resource()
         cls._start_listener()
 

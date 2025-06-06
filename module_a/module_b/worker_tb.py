@@ -1,5 +1,5 @@
 from utils.log_tool_mt import logging_mt
-logging_mt = logging_mt.get_Logger(__name__)
+logging_mt = logging_mt.get_logger(__name__)
 
 def worker_tb():
     logging_mt.debug("Detailed debug info")
