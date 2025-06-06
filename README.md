@@ -17,13 +17,16 @@ logging-mp is a lightweight Python logging tool designed to solve issues like lo
 ### 📦 Installation
 ```bash
 pip install logging-mp
-or clone this repository:
 ```
+
+or clone this repository:
+
 ```bash
 git clone https://github.com/silencht/logging-mp.git
 cd logging-mp/utils/logging_mp
 pip install -e .
 ```
+
 ### 🛠️ Usage
 See test_log_tool_mp.py
 
