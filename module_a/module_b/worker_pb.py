@@ -1,4 +1,4 @@
-from utils.logging_mp import logging_mp
+import logging_mp
 logger_mp = logging_mp.get_logger(__name__, level=logging_mp.CRITICAL)
 
 def worker_pb():

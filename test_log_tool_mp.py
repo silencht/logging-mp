@@ -1,6 +1,6 @@
 from multiprocessing import Process
 import threading
-from utils.logging_mp import logging_mp
+import logging_mp
 
 from module_a.worker_pa import worker_pa
 from module_a.module_b.worker_pb import worker_pb
