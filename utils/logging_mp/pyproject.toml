@@ -1,6 +1,6 @@
 [project]
 name = "logging-mp"
-version = "0.1.5"
+version = "0.1.6"
 description = "A multiprocessing-safe logging system with Rich support."
 readme = "README.md"
 license = { text = "MIT" }

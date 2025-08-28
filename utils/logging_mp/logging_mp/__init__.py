@@ -5,6 +5,7 @@ from logging.handlers import QueueHandler, QueueListener
 import multiprocessing
 from rich.logging import RichHandler
 import atexit
+import signal
 
 _log_queue = None
 _listener_processer = None
@@ -23,6 +24,10 @@ def _is_main_process():
 
 def _listener_process(queue, _stop_process_event):
     try:
+        try:
+            signal.signal(signal.SIGINT, signal.SIG_IGN)
+        except Exception:
+            pass
         global _queue_listener
         rich_handler = RichHandler(
             show_time=True,
@@ -75,28 +80,41 @@ def get_logger(name=None, level=None):
 
 def stop_listener_process():
     global _listener_processer, _log_queue, _stop_process_event
-    if _log_queue:
+    old = None
+    try:
         try:
-            while not _log_queue.empty():
-                import time
-                time.sleep(0.1)
-        except Exception as e:
-            print(f"Error draining queue: {e}")
+            old = signal.getsignal(signal.SIGINT)
+            signal.signal(signal.SIGINT, signal.SIG_IGN)
+        except Exception:
+            old = None
 
-    if _listener_processer and _listener_processer.is_alive():
-        try:
-            _stop_process_event.set()
-            _listener_processer.join(timeout=1)
-            if _listener_processer.is_alive():
-                _listener_processer.terminate()
-        except Exception as e:
-            print(f"Error stopping listener process: {e}")
+        if _stop_process_event is not None:
+            try:
+                _stop_process_event.set()
+            except Exception:
+                pass
 
-    if _log_queue:
-        try:
-            _log_queue.close()
-            _log_queue.join_thread()
-        except Exception as e:
-            print(f"Error closing queue: {e}")
-        finally:
-            _log_queue = None
+        # removed busy-wait drain loop
+
+        if _listener_processer and _listener_processer.is_alive():
+            try:
+                _listener_processer.join(timeout=1.5)
+                if _listener_processer.is_alive():
+                    _listener_processer.terminate()
+            except Exception as e:
+                print(f"Error stopping listener process: {e}")
+
+        if _log_queue:
+            try:
+                _log_queue.close()
+                _log_queue.join_thread()
+            except Exception as e:
+                print(f"Error closing queue: {e}")
+            finally:
+                _log_queue = None
+    finally:
+        if old is not None:
+            try:
+                signal.signal(signal.SIGINT, old)
+            except Exception:
+                pass
