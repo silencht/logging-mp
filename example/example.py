@@ -1,9 +1,9 @@
 import multiprocessing
 import threading
-try:
-    multiprocessing.set_start_method('spawn', force=True)
-except RuntimeError:
-    pass
+# try:
+#     multiprocessing.set_start_method('spawn', force=True)
+# except RuntimeError:
+#     pass
 
 import logging_mp
 # Note: basicConfig must be called first to set up the logging system before any loggers are created
