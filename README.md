@@ -1,34 +1,36 @@
-## logging-mp
-### 🧰 A multiprocessing-safe logging system with Rich colored output support
+# logging-mp
 
-logging-mp is a lightweight Python logging tool designed to solve issues like log disorder, loss, and sequence confusion in multiprocessing environments. It also supports beautiful terminal output powered by rich.
+> 🧰 一个支持多进程、带有 Rich 彩色输出的日志系统（multiprocessing-safe logging system with Rich support）
 
-### 🚀 Features
-✅ Multiprocessing safe: implemented with multiprocessing.Queue and QueueHandler
+`logging-mp` 是一个轻量级的 Python 日志工具，解决了在多进程环境下日志错乱、丢失、顺序混乱等问题，并支持漂亮的终端输出（基于 [`rich`](https://github.com/Textualize/rich)）。
 
-✅ Dedicated log listener process: avoids blocking the main process
+---
 
-✅ Colored terminal output: integrated with rich.logging.RichHandler
+## 🚀 特性 Features
 
-✅ Supports dynamic log level setting: compatible with logging.DEBUG/INFO/WARNING/...
+- ✅ **多进程安全**：使用 `multiprocessing.Queue` 和 `QueueHandler` 实现
+- ✅ **独立日志监听进程**：避免主进程阻塞
+- ✅ **彩色终端输出**：集成 `rich.logging.RichHandler`
+- ✅ **支持动态日志等级设置**：兼容 `logging.DEBUG/INFO/WARNING/...`
+- ✅ **简单易用**：无需复杂配置，一行代码启动
 
-✅ Simple and easy to use: start with just one line of code, no complex configuration required
+---
 
-### 📦 Installation
+## 📦 安装 Installation
+
 ```bash
 pip install logging-mp
 ```
-
-or clone this repository:
-
+或克隆本仓库:
 ```bash
 git clone https://github.com/silencht/logging-mp.git
-cd logging-mp/utils/logging_mp
-pip install -e .
+cd logging-mp
+pip install .
 ```
 
-### 🛠️ Usage
-See test_log_tool_mp.py
+## 🛠️ 使用方法 Usage
+请参考 [example/example.py](example/example.py) 中的示例代码，展示了如何在多进程环境中使用 `logging-mp` 进行日志记录。
 
-### 📄 License
-This project is licensed under the MIT License.
+## 📄 License
+本项目采用 MIT License。
+

@@ -1,10 +1,13 @@
 [project]
 name = "logging-mp"
-version = "0.1.6"
+version = "0.2.0"
 description = "A multiprocessing-safe logging system with Rich support."
-readme = "README.md"
+authors = [
+    { name = "silencht", email = "silencht@qq.com" }
+]
 license = { text = "MIT" }
-authors = [{name = "silencht", email = "silencht@qq.com"}]
+readme = "README.md"
+
 requires-python = ">=3.8"
 dependencies = [
     "rich>=13.0"
@@ -12,3 +15,9 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://github.com/silencht/logging-mp"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

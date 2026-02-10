@@ -12,3 +12,4 @@ __MACOSX/
 *.svo
 *.png
 dist/
+logs/
