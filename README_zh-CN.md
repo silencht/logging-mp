@@ -1,12 +1,16 @@
 <div align="center">
-  <h1 align="center"> logging-mp </h1>
-  <a href="https://www.unitree.com/" target="_blank">
-    <img src="https://www.unitree.com/images/0079f8938336436e955ea3a98c4e1e59.svg" alt="Unitree LOGO" width="15%">
-  </a>
+  <div align="center">
+    <img src="./logging_mp.png" width="25%" style="vertical-align: middle;">
+    <span style="color: #ddd; margin: 0 20px; font-size: 30px; vertical-align: middle;">|</span>
+    <a href="https://www.unitree.com/" target="_blank" style="vertical-align: middle;">
+      <img src="https://www.unitree.com/images/0079f8938336436e955ea3a98c4e1e59.svg" width="15%">
+    </a>
+  </div>
   <p align="center">
     <a href="README.md"> English </a> | <a>中文</a> </a>
   </p>
 </div>
+
 
 **logging_mp** 是一个专为 Python 设计的**支持多进程**的日志库。
 
