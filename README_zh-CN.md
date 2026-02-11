@@ -2,10 +2,12 @@
   <div align="center">
     <img src="./logging_mp.png" width="25%" style="vertical-align: middle;">
     <span style="color: #ddd; margin: 0 20px; font-size: 30px; vertical-align: middle;">|</span>
-    <a href="https://www.unitree.com/" target="_blank" style="vertical-align: middle;">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="https://www.unitree.com/" target="_blank" style="vertical-align: middle; margin-left: 30px;">
       <img src="https://www.unitree.com/images/0079f8938336436e955ea3a98c4e1e59.svg" width="15%">
     </a>
   </div>
+  <br>
   <p align="center">
     <a href="README.md"> English </a> | <a>中文</a> </a>
   </p>
