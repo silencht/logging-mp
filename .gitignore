@@ -14,3 +14,4 @@ __MACOSX/
 *.log
 dist/
 logs/
+!logging_mp.png
