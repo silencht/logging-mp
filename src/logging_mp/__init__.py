@@ -58,12 +58,12 @@ def _logging_mp_queue_listener(queue_proxy, stop_event, config, prog_name):
         )
     if config.get("file", False):
         file_path = config.get("file_path", "logs")
-        backupCount = config.get("backupCount", 5)
+        backup_count = config.get("backup_count", 10)
         os.makedirs(file_path, exist_ok=True)
         log_file_pattern = os.path.join(file_path, f"{prog_name}_*.log")
         old_logs = sorted(glob.glob(log_file_pattern), key=os.path.getmtime)
-        if len(old_logs) >= backupCount:
-            for i in range(len(old_logs) - backupCount + 1):
+        if len(old_logs) >= backup_count:
+            for i in range(len(old_logs) - backup_count + 1):
                 try:
                     os.remove(old_logs[i])
                 except Exception:
@@ -117,7 +117,7 @@ class LoggingMP:
             "console": True,
             "file": False,
             "file_path": "logs",
-            "backupCount": 10,
+            "backup_count": 10,
         }
 
     # ------------------------------------------------------------------
@@ -129,7 +129,7 @@ class LoggingMP:
             console: bool = True,
             file: bool = False,
             file_path: str = "logs",
-            backupCount: int = 10
+            backup_count: int = 10
         ) -> None:
         """Configure the logging-mp system with global settings.
     
@@ -138,7 +138,7 @@ class LoggingMP:
             console (bool): Enable console output (default: True).
             file (bool): Enable file output (default: False).
             file_path (str): Path for log files (default: "logs").
-            backupCount (int): Number of backup log files to keep (default: 10).
+            backup_count (int): Number of backup log files to keep (default: 10).
         
         Raises:
             RuntimeError: If logging is already started.
@@ -151,7 +151,7 @@ class LoggingMP:
             "console": console,
             "file": file,
             "file_path": file_path,
-            "backupCount": backupCount
+            "backup_count": backup_count
         })
         if not console and not file:
             raise ValueError("At least one of 'console' or 'file' must be True.")
