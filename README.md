@@ -58,17 +58,17 @@ logging_mp.basicConfig(
     file_path="logs"
 )
 # Get a logger
-logger = logging_mp.getLogger(__name__)
+logger_mp = logging_mp.getLogger(__name__)
 
 def worker_task(name):
     # In the child process, just get a logger and log!
     # No queues to configure, no listeners to start.
-    worker_logger = logging_mp.getLogger("worker")
-    worker_logger.info(f"👋 Hello from {name} (PID: {multiprocessing.current_process().pid})")
+    worker_logger_mp = logging_mp.getLogger("worker")
+    worker_logger_mp.info(f"👋 Hello from {name} (PID: {multiprocessing.current_process().pid})")
     time.sleep(0.5)
 
 if __name__ == "__main__":
-    logger.info("🚀 Starting processes...")
+    logger_mp.info("🚀 Starting processes...")
     
     processes = []
     for i in range(3):
@@ -79,7 +79,7 @@ if __name__ == "__main__":
     for p in processes:
         p.join()
     
-    logger.info("✅ All tasks finished.")
+    logger_mp.info("✅ All tasks finished.")
 ```
 
 ### 3.2 Configuration Options
@@ -130,9 +130,11 @@ The native Python `logging` library, while **thread-safe**, does not support **m
 
 ## 6. ⚠️ Compatibility Note
 
-1. **Import Order**: In multiprocessing environments using `spawn` mode, ensure that you import `logging_mp` and call `basicConfig` **before** creating any `Process` objects.
-2. **Windows/macOS Users**: Due to the use of `spawn` startup mode, **always place the startup code inside an `if __name__ == "__main__":` block**. Otherwise, it may cause recursive startup errors.
-3. **Process Subclassing**: If you create processes by subclassing `multiprocessing.Process` and override the `__init__` method, **be sure to call `super().__init__()`**. Otherwise, the logging queue may not be properly injected.
+- **Import Order**: In multiprocessing environments using `spawn` mode, ensure that you import `logging_mp` and call `basicConfig` **before** creating any `Process` objects.
+
+- **Windows/macOS Users**: Due to the use of `spawn` startup mode, **always place the startup code inside an `if __name__ == "__main__":` block**. Otherwise, it may cause recursive startup errors.
+
+- **Process Subclassing**: If you create processes by subclassing `multiprocessing.Process` and override the `__init__` method, **be sure to call `super().__init__()`**. Otherwise, the logging queue may not be properly injected.
 
 ## 7. 📄 License
 

@@ -10,12 +10,12 @@
 
 **logging_mp** 是一个专为 Python 设计的**支持多进程**的日志库。
 
-它解决了标准 [logging](https://docs.python.org/zh-cn/3.14/library/logging.html) 模块在多进程环境下日志错乱、丢失或死锁的问题。在 `spawn` 模式下，`logging_mp` 通过 **Monkey Patch ** 技术，自动处理进程间的 `Queue` 传递与监听。
+它解决了标准 [logging](https://docs.python.org/zh-cn/3.14/library/logging.html) 模块在多进程环境下日志错乱、丢失或死锁的问题。在 `spawn` 模式下，`logging_mp` 通过 **Monkey Patch** 技术，自动处理进程间的 `Queue` 传递与监听。
 
 ## 1. ✨ 核心特性
 
 * **⚡ 零配置多进程支持**：无需手动传递 Queue，无需修改 Worker 函数签名，子进程自动继承日志能力。
-* **💻 跨平台兼容**：支持 Linux (`fork`) 以及 Windows/macOS (`spawn`) 的启动方式。
+* **💻 跨平台兼容**：支持 Linux ( `fork` ) 以及 Windows/macOS ( `spawn` ) 的启动方式。
 * **🎨 Rich 终端美化**：集成 [Rich](https://github.com/Textualize/rich) 库，提供高亮、清晰的控制台日志输出。
 * **📂 文件管理**：自动启动后台监听进程，将所有子进程和线程的日志汇聚到同一个文件中，并支持自动轮转。
 * **🔒 线程安全**：完全兼容 Python 的 `threading` 模块。
@@ -56,16 +56,16 @@ logging_mp.basicConfig(
     file_path="logs"
 )
 # 获取 Logger
-logger = logging_mp.getLogger(__name__)
+logger_mp = logging_mp.getLogger(__name__)
 
 def worker_task(name):
     # 子进程中直接获取 logger，无需任何额外配置
-    worker_logger = logging_mp.getLogger("worker")
-    worker_logger.info(f"👋 Hello from {name} (PID: {multiprocessing.current_process().pid})")
+    worker_logger_mp = logging_mp.getLogger("worker")
+    worker_logger_mp.info(f"👋 Hello from {name} (PID: {multiprocessing.current_process().pid})")
     time.sleep(0.5)
 
 if __name__ == "__main__":
-    logger.info("🚀 Starting processes...")
+    logger_mp.info("🚀 Starting processes...")
     
     processes = []
     for i in range(3):
@@ -76,7 +76,7 @@ if __name__ == "__main__":
     for p in processes:
         p.join()
     
-    logger.info("✅ All tasks finished.")
+    logger_mp.info("✅ All tasks finished.")
 ```
 
 ### 3.2 配置参数
@@ -118,18 +118,20 @@ if __name__ == "__main__":
 
 原生 Python `logging` 库虽然是**线程安全**的，但并不支持**多进程模式**。`logging_mp` 采用了一套异步通信机制，在保持多线程兼容性的同时，彻底解决了多进程并发写入的冲突问题：
 
-- **中心化监听 (Aggregation)**： 在主进程启动时，系统会自动创建一个独立的后台进程 `_logging_mp_queue_listener`。它是全局唯一的**“消费者”**，负责从队列中提取日志，并统一执行 Rich 控制台渲染或文件写入操作。
-- **透明注入 (Monkey Patch)**： 为了实现用户“零感知”接入，库在导入时会修补 `multiprocessing.Process`。在 `spawn` 模式下，当执行 `Process.start()` 时，系统会自动将日志队列对象注入到子进程的引导阶段 (`_bootstrap`)，确保子进程启动瞬间即具备日志回传能力。
+- **中心化监听 (Aggregation)**： 在主进程启动时，系统会自动创建一个独立的后台进程 `_logging_mp_queue_listener`。它是全局唯一的**消费者**，负责从队列中提取日志，并统一执行 Rich 控制台渲染或文件写入操作。
+- **透明注入 (Monkey Patch)**： 为了实现用户**零感知**接入，库在导入时会修补 `multiprocessing.Process`。在 `spawn` 模式下，当执行 `Process.start()` 时，系统会自动将日志队列对象注入到子进程的引导阶段 (`_bootstrap`)，确保子进程启动瞬间即具备日志回传能力。
 - **全场景支持 (Threads & Processes)**：
   - **多线程**：直接继承原生 `logging` 的线程安全特性，线程间日志无需跨进程通讯，开销极低。
-  - **多进程**：各子进程中的 `logger.info()` 扮演**“生产者”**角色。日志记录被推入跨进程队列后立即返回。由于耗时的磁盘 I/O 在监听进程中异步完成，您的业务逻辑几乎不会被日志操作阻塞。
+  - **多进程**：各子进程中的 `logger.info()` 扮演**生产者**角色。日志记录被推入跨进程队列后立即返回。由于耗时的磁盘 I/O 在监听进程中异步完成，您的业务逻辑几乎不会被日志操作阻塞。
 - **线性顺序保证 (Ordering)**： 所有进程与线程的日志最终都会汇聚到同一个内存队列。监听进程按接收到的先后顺序处理，确保了输出在时间轴上的线性一致性，彻底杜绝了多进程/多线程同时写文件导致的字符交织和文件锁死问题。
 
 ## 6. ⚠️ 注意事项
 
-1. **导入顺序**：在 `spawn` 模式的多进程下，请确保在创建任何 `Process` 对象之前导入 `logging_mp` 并调用 `basicConfig`。
-2. **Windows/macOS 用户**：由于使用 `spawn` 启动模式，请务必将启动代码放在 `if __name__ == "__main__":` 块中，否则可能会导致递归启动错误。
-3. **Process 子类化**：如果您通过继承 `multiprocessing.Process` 类来创建进程，且重写了 `__init__`，请确保调用 `super().__init__()`，否则日志队列可能无法正确注入。
+- **导入顺序**：在 `spawn` 模式的多进程下，请确保在创建任何 `Process` 对象之前导入 `logging_mp` 并调用 `basicConfig`。
+
+- **Windows/macOS 用户**：由于使用 `spawn` 启动模式，请务必将启动代码放在 `if __name__ == "__main__":` 块中，否则可能会导致递归启动错误。
+
+- **Process 子类化**：如果您通过继承 `multiprocessing.Process` 类来创建进程，且重写了 `__init__`，请确保调用 `super().__init__()`，否则日志队列可能无法正确注入。
 
 ## 7. 📄 开源协议
 
