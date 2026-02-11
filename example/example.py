@@ -20,7 +20,7 @@ def main():
         logger.info("M: Should not be printed.")
         logger.warning("M: This is a warning message")
         logger.error("M: This is an error message")
-        logger.critical("M: This is a critical message")
+        logger.critical("M: Now below starting Process workers")
 
         processes = []
         for i, target in enumerate([worker_ta, worker_tb, worker_tc]):
@@ -29,7 +29,9 @@ def main():
             processes.append(p)
         for p in processes:
             p.join()
-        
+
+        logger.critical("M: Now below starting Thread workers")
+
         threads = []
         for i, target in enumerate([worker_ta, worker_tb, worker_tc]):
             t = threading.Thread(target=target, name=f"Thread-{i}")
@@ -37,6 +39,8 @@ def main():
             threads.append(t)
         for t in threads:
             t.join()
+        
+        logger.critical("M: All workers have completed.")
 
     except KeyboardInterrupt:
         logger.error("KeyboardInterrupt received, stopping processes.")

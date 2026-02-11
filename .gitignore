@@ -11,5 +11,6 @@ __MACOSX/
 *.jpg
 *.svo
 *.png
+*.log
 dist/
 logs/
